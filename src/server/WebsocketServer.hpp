@@ -15,7 +15,7 @@ typedef std::map<connection_hdl,int,std::owner_less<connection_hdl>> connectionM
 
 class Server;
 
-class websocketserver {
+class WebsocketServer {
 private:
 
     condition_variable* actionCondVar;
@@ -27,7 +27,7 @@ private:
 
 public:
 
-    websocketserver();
+    WebsocketServer();
     void init(condition_variable* actionCondVar, std::queue<Action>* actionsQueue, mutex* actionLock, Server* mainServer);
     void on_open(connection_hdl hdl);
     void on_close(connection_hdl hdl);

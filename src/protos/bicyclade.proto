@@ -1,44 +1,59 @@
 syntax = "proto3";
 
-option objc_class_prefix = "HLW";
-
 package bicyclade;
-
-service BicServer {
-  rpc Connect (Connection) returns (stream Game) {}
-  rpc ExecuteAction (ActionList) returns (Rstatus) {}
-}
-
-service ClientServer {
-  rpc Stream (Action) returns (Rstatus) {}
-}
-
-message Connection {
-  string ip = 1;
-  string port = 2;
-}
 
 message Action {
   string message = 1;
   int32 valeur = 2;
 }
 
-message ActionList {
-  repeated Action action = 1;
+enum Colour {
+  BLACK = 0;
+  BLUE = 1;
+  PURPLE = 2;
+  RED = 3;
+  YELLOW = 4;
 }
 
-message Rstatus {
-  enum Status {
-    OK = 0;
-    KO = 1;
-  }
-  Status status = 1;
-}
-
-message Game {
-  string todo = 1;
+message Client {
+  string name = 1;
 }
 
 message Player {
-  //TODO
+  Client client = 1;
+  Colour colour = 2;
+}
+
+enum GlobalAction {
+  CLIENT_ACTION = 0;
+  PLAYER_ACTION = 1;// unsupported
+  SERVER_ACTION = 2;
+}
+
+enum ServerActionType {
+  START_GAME = 0;
+}
+
+enum ClientActionType {
+  JOIN_GAME = 0;// unsupported
+  QUIT_GAME = 1;// unsupported
+  ADD_NAME = 2;
+  CHAT = 3;
+}
+
+message ClientAction {
+  ClientActionType type = 1;
+  Client value = 2;
+}
+
+message ServerAction {
+  ServerActionType type = 1;
+  repeated Player player_list = 2;
+}
+
+// The only protobuf message servers and clients can send, main container of any message
+message Container {
+  GlobalAction global_action = 1;
+  ClientAction client_action = 2;
+  ServerAction server_action = 3;
 }

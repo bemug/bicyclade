@@ -3,7 +3,7 @@
 #include "../bom/Client.hpp"
 #include "../generated/bicyclade.pb.h"
 
-#include "websocket.hpp"
+#include "WebsocketServer.hpp"
 
 #include <queue>
 #include <condition_variable>

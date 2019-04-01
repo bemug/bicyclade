@@ -12,10 +12,10 @@ using websocketpp::lib::bind;
 using bicyclade::Action;
 using namespace std;
 
-websocketserver::websocketserver() {
+WebsocketServer::websocketserver() {
 }
 
-void websocketserver::init(condition_variable* actionCondVar, std::queue<Action>* actionsQueue, mutex* actionLock, Server* mainServer) {
+void WebsocketServer::init(condition_variable* actionCondVar, std::queue<Action>* actionsQueue, mutex* actionLock, Server* mainServer) {
 
 	// Initialize Asio Transport
 	socketServer.init_asio();
@@ -32,7 +32,7 @@ void websocketserver::init(condition_variable* actionCondVar, std::queue<Action>
 }
 
 
-void websocketserver::run(uint16_t port) {
+void WebsocketServer::run(uint16_t port) {
 	// listen on specified port
 	socketServer.listen(port);
 
@@ -47,7 +47,7 @@ void websocketserver::run(uint16_t port) {
 	}
 }
 
-void websocketserver::on_open(connection_hdl hdl) {
+void WebsocketServer::on_open(connection_hdl hdl) {
 	{
 	    lock_guard<mutex> guard(*actionLock);
 	    int id = mainServer->create_client();
@@ -55,7 +55,7 @@ void websocketserver::on_open(connection_hdl hdl) {
 	}
 }
 
-void websocketserver::on_close(connection_hdl hdl) {
+void WebsocketServer::on_close(connection_hdl hdl) {
 	{
 		lock_guard<mutex> guard(*actionLock);
 		//std::cout << "on_close" << std::endl;
@@ -65,7 +65,7 @@ void websocketserver::on_close(connection_hdl hdl) {
 	}
 }
 
-void websocketserver::on_message(connection_hdl hdl, server::message_ptr msg) {
+void WebsocketServer::on_message(connection_hdl hdl, server::message_ptr msg) {
 	// queue message up for sending by processing thread
 	{
 		lock_guard<mutex> guard(*actionLock);
@@ -76,7 +76,7 @@ void websocketserver::on_message(connection_hdl hdl, server::message_ptr msg) {
 	actionCondVar->notify_one();
 }
 
-void websocketserver::broadcast(Action& action) {
+void WebsocketServer::broadcast(Action& action) {
     connectionMapType::iterator it;
 	string sria;
 	action.SerializeToString(&sria);
